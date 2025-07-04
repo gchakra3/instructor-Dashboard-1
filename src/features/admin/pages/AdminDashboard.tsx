@@ -11,7 +11,8 @@ import {
   Settings,
   Shield,
   TrendingUp,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Award
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -25,10 +26,12 @@ import { useUserProfiles } from '../../user-profile/hooks/useUserProfiles'
 import { ArticleManagement } from '../components/ArticleManagement'
 import { BookingManagement } from '../components/BookingManagement'
 import { BusinessSettings } from '../components/BusinessSettings'
+import { ClassTypeManager } from '../components/ClassTypeManager'
 import { FormSubmissions } from '../components/FormSubmissions'
 import { InstructorManagement } from '../components/InstructorManagement'
 import { NewsletterManagement } from '../components/NewsletterManagement'
 import { UserRoleManagement } from '../components/UserRoleManagement'
+import { WeeklyClassScheduler } from '../components/WeeklyClassScheduler'
 import { useAdmin } from '../contexts/AdminContext'
 
 interface DashboardStats {
@@ -340,7 +343,8 @@ export function AdminDashboard() {
               { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
               { id: 'users', label: 'User Management', icon: <UsersIcon className="w-4 h-4" /> },
               { id: 'instructors', label: 'Instructors', icon: <GraduationCap className="w-4 h-4" /> },
-              { id: 'classes', label: 'Class Types', icon: <Calendar className="w-4 h-4" /> },
+              { id: 'classes', label: 'Class Types', icon: <Award className="w-4 h-4" /> },
+              { id: 'schedule', label: 'Weekly Schedule', icon: <Calendar className="w-4 h-4" /> },
               { id: 'articles', label: 'Articles', icon: <BookOpen className="w-4 h-4" /> },
               { id: 'bookings', label: 'Bookings', icon: <Calendar className="w-4 h-4" /> },
               { id: 'subscriptions', label: 'Subscriptions', icon: <CreditCard className="w-4 h-4" /> },
@@ -618,97 +622,14 @@ export function AdminDashboard() {
         {/* Individual Tabs */}
         {activeTab === 'articles' && <ArticleManagement />}
         {activeTab === 'instructors' && <InstructorManagement />}
-
-        {/* Bookings Tab */}
+        {activeTab === 'classes' && <ClassTypeManager />}
+        {activeTab === 'schedule' && <WeeklyClassScheduler />}
         {activeTab === 'bookings' && <BookingManagement />}
-
-        {/* Form Submissions Tab */}
         {activeTab === 'submissions' && <FormSubmissions />}
-
-        {/* Newsletter Tab */}
         {activeTab === 'newsletter' && <NewsletterManagement />}
-
-        {/* Business Settings Tab */}
         {activeTab === 'settings' && <BusinessSettings />}
 
-        {/* Instructors Tab */}
-        {activeTab === 'instructors' && (
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Instructors ({stats.allInstructors.length})</h2>
-            {stats.allInstructors.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {stats.allInstructors.map((instructor) => (
-                  <div key={instructor.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <h3 className="font-semibold text-lg text-gray-900">{instructor.name}</h3>
-                    <p className="text-sm text-gray-600 mt-2">{instructor.bio}</p>
-                    <div className="mt-4">
-                      <p className="text-sm text-gray-500">Experience: {instructor.experience_years} years</p>
-                      {instructor.specialties && instructor.specialties.length > 0 && (
-                        <div className="mt-2">
-                          <p className="text-sm text-gray-500">Specialties:</p>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {instructor.specialties.map((specialty: string, index: number) => (
-                              <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                                {specialty}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <GraduationCap className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No instructors yet</h3>
-                <p className="text-gray-600">Instructors will appear here once they are added.</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Class Types Tab */}
-        {activeTab === 'classes' && (
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Class Types ({stats.allClassTypes.length})</h2>
-            {stats.allClassTypes.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {stats.allClassTypes.map((classType) => (
-                  <div key={classType.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <h3 className="font-semibold text-lg text-gray-900">{classType.name}</h3>
-                    <p className="text-sm text-gray-600 mt-2">{classType.description}</p>
-                    <div className="mt-4 space-y-2">
-                      <p className="text-sm">
-                        <span className="text-gray-500">Level:</span> 
-                        <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded capitalize">
-                          {classType.difficulty_level}
-                        </span>
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-gray-500">Price:</span> 
-                        <span className="ml-2 font-semibold">{formatCurrency(classType.price)}</span>
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-gray-500">Duration:</span> 
-                        <span className="ml-2">{classType.duration_minutes} minutes</span>
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No class types yet</h3>
-                <p className="text-gray-600">Class types will appear here once they are added.</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Add other existing tabs here... */}
+        {/* Other existing tabs remain the same... */}
       </main>
     </div>
   )
