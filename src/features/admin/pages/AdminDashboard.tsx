@@ -55,12 +55,18 @@ interface DashboardStats {
 
 export function AdminDashboard() {
   const { admin, isAdmin, signOutAdmin } = useAdmin()
-  const { isMantraCurator } = useAuth()
+  const { isMantraCurator, user } = useAuth()
   const { profiles, refetch: refetchProfiles } = useUserProfiles()
   const navigate = useNavigate()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState(() => {
+    // Set default tab based on user role
+    if (isMantraCurator && !isAdmin) {
+      return 'articles'
+    }
+    return 'overview'
+  })
   const [selectedUser, setSelectedUser] = useState<any>(null)
   const [showRoleManagement, setShowRoleManagement] = useState(false)
 
@@ -69,7 +75,14 @@ export function AdminDashboard() {
       navigate('/admin/login')
       return
     }
-    fetchDashboardData()
+    
+    // Only fetch full dashboard data for admins
+    if (isAdmin) {
+      fetchDashboardData()
+    } else {
+      // For curators, just set loading to false
+      setLoading(false)
+    }
   }, [isAdmin, isMantraCurator, navigate])
 
   const fetchDashboardData = async () => {
@@ -223,6 +236,53 @@ export function AdminDashboard() {
     )
   }
 
+  // For curators, show a simplified dashboard
+  if (isMantraCurator && !isAdmin) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center space-x-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">Y</span>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">Article Management</h1>
+                  <p className="text-sm text-gray-600">Welcome back, {user?.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/')}
+                  className="flex items-center space-x-2"
+                >
+                  <span>View Site</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleSignOut}
+                  className="flex items-center space-x-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <ArticleManagement authorId={user?.id} />
+        </main>
+      </div>
+    )
+  }
+
+  // For admins, show the full dashboard
   if (!stats) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -277,24 +337,19 @@ export function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-8 overflow-x-auto">
             {[
-              // Only show articles tab for Mantra Curators who are not admins
-              ...(isMantraCurator && !isAdmin ? [
-                { id: 'articles', label: 'Articles', icon: <BookOpen className="w-4 h-4" /> }
-              ] : [
-                { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
-                { id: 'users', label: 'User Management', icon: <UsersIcon className="w-4 h-4" /> },
-                { id: 'instructors', label: 'Instructors', icon: <GraduationCap className="w-4 h-4" /> },
-                { id: 'classes', label: 'Class Types', icon: <Calendar className="w-4 h-4" /> },
-                { id: 'articles', label: 'Articles', icon: <BookOpen className="w-4 h-4" /> },
-                { id: 'bookings', label: 'Bookings', icon: <Calendar className="w-4 h-4" /> },
-                { id: 'subscriptions', label: 'Subscriptions', icon: <CreditCard className="w-4 h-4" /> },
-                { id: 'transactions', label: 'Transactions', icon: <TrendingUp className="w-4 h-4" /> },
-                { id: 'queries', label: 'Yoga Queries', icon: <MessageCircle className="w-4 h-4" /> },
-                { id: 'contacts', label: 'Contact Messages', icon: <Mail className="w-4 h-4" /> },
-                { id: 'submissions', label: 'Form Submissions', icon: <FileText className="w-4 h-4" /> },
-                { id: 'newsletter', label: 'Newsletter', icon: <Mail className="w-4 h-4" /> },
-                { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> }
-              ])
+              { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
+              { id: 'users', label: 'User Management', icon: <UsersIcon className="w-4 h-4" /> },
+              { id: 'instructors', label: 'Instructors', icon: <GraduationCap className="w-4 h-4" /> },
+              { id: 'classes', label: 'Class Types', icon: <Calendar className="w-4 h-4" /> },
+              { id: 'articles', label: 'Articles', icon: <BookOpen className="w-4 h-4" /> },
+              { id: 'bookings', label: 'Bookings', icon: <Calendar className="w-4 h-4" /> },
+              { id: 'subscriptions', label: 'Subscriptions', icon: <CreditCard className="w-4 h-4" /> },
+              { id: 'transactions', label: 'Transactions', icon: <TrendingUp className="w-4 h-4" /> },
+              { id: 'queries', label: 'Yoga Queries', icon: <MessageCircle className="w-4 h-4" /> },
+              { id: 'contacts', label: 'Contact Messages', icon: <Mail className="w-4 h-4" /> },
+              { id: 'submissions', label: 'Form Submissions', icon: <FileText className="w-4 h-4" /> },
+              { id: 'newsletter', label: 'Newsletter', icon: <Mail className="w-4 h-4" /> },
+              { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> }
             ].map((tab) => (
               <button
                 key={tab.id}
