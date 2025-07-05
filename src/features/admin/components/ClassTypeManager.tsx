@@ -128,13 +128,26 @@ export function ClassTypeManager() {
         .delete()
         .eq('id', id)
 
-      if (error) throw error
+      if (error) {
+        // Check if it's a foreign key constraint violation
+        if (error.code === '23503' || error.message.includes('foreign key constraint')) {
+          alert('Cannot delete this class type because it is currently associated with existing class schedules. Please first delete or deactivate the associated scheduled classes before attempting to delete this class type.')
+        } else {
+          alert(`Failed to delete class type: ${error.message}`)
+        }
+        return
+      }
 
       await fetchClassTypes()
       alert('Class type deleted successfully!')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting class type:', error)
-      alert('Failed to delete class type')
+      // Handle any other unexpected errors
+      if (error.code === '23503' || (error.message && error.message.includes('foreign key constraint'))) {
+        alert('Cannot delete this class type because it is currently associated with existing class schedules. Please first delete or deactivate the associated scheduled classes before attempting to delete this class type.')
+      } else {
+        alert('Failed to delete class type. Please try again.')
+      }
     }
   }
 
