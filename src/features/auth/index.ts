@@ -1,12 +1,11 @@
 // auth feature exports
 
 // Components
-export { default as ProtectedAdminRoute } from './components/ProtectedAdminRoute.tsx';
+export { ProtectedAdminRoute } from './components/ProtectedAdminRoute';
 
 // Contexts
-export { default as AuthContext } from './contexts/AuthContext.tsx';
+export * from './contexts/AuthContext';
 
 // Pages
-export { default as Login } from './pages/Login.tsx';
-export { default as AdminLogin } from './pages/AdminLogin.tsx';
-
+export { Login } from './pages/Login';
+export { AdminLogin } from './pages/AdminLogin';

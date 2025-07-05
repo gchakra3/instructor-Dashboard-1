@@ -164,7 +164,7 @@ export function UserRoleManagement({ userId, userEmail, currentRoles, onRoleUpda
       }
 
       // 3. Delete roles that are no longer selected
-      const rolesToRemove = existingRoles.filter(role => !selectedRoles.includes(role))
+      const rolesToRemove = existingRoles.filter((role: string) => !selectedRoles.includes(role))
       console.log('🗑️ Roles to remove:', rolesToRemove)
       
       if (rolesToRemove.length > 0) {
