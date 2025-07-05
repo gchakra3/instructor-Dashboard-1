@@ -1,8 +1,7 @@
 // user-profile feature exports
 
 // Hooks
-export * from './hooks/useUserProfiles.ts';
+export * from './hooks/useUserProfiles';
 
 // Pages
-export { default as Profile } from './pages/Profile.tsx';
-
+export { Profile } from './pages/Profile';

@@ -1,12 +1,11 @@
 // scheduling feature exports
 
 // Components
-export { default as WeeklySchedule } from './components/WeeklySchedule.tsx';
+export { WeeklySchedule } from './components/WeeklySchedule';
 
 // Hooks
-export * from './hooks/useClassSchedule.ts';
+export * from './hooks/useClassSchedule';
 
 // Pages
-export { default as Schedule } from './pages/Schedule.tsx';
-export { default as BookClass } from './pages/BookClass.tsx';
-
+export { Schedule } from './pages/Schedule';
+export { BookClass } from './pages/BookClass';

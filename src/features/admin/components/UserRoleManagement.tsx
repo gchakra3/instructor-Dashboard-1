@@ -142,7 +142,7 @@ export function UserRoleManagement({ userId, userEmail, currentRoles, onRoleUpda
       }
 
       // Convert the response data to an array of role names
-      const existingRoles = existingRoleData?.map(item => item.roles?.name).filter(Boolean) || []
+      const existingRoles = existingRoleData?.map(item => item.roles?.name).filter((name): name is string => name != null) || []
       console.log('📊 Existing roles from DB:', existingRoles)
       
       // 2. Get IDs for ALL roles (not just selected ones) to handle removals
@@ -164,7 +164,7 @@ export function UserRoleManagement({ userId, userEmail, currentRoles, onRoleUpda
       }
 
       // 3. Delete roles that are no longer selected
-      const rolesToRemove = existingRoles.filter(role => !selectedRoles.includes(role))
+      const rolesToRemove = existingRoles.filter((role: string) => !selectedRoles.includes(role))
       console.log('🗑️ Roles to remove:', rolesToRemove)
       
       if (rolesToRemove.length > 0) {

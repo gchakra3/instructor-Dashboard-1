@@ -1,19 +1,18 @@
 // learning feature exports
 
 // Components
-export { default as ArticleCard } from './components/ArticleCard.tsx';
-export { default as ArticleFilters } from './components/ArticleFilters.tsx';
-export { default as RatingModule } from './components/RatingModule.tsx';
-export { default as ShareButtons } from './components/ShareButtons.tsx';
+export { ArticleCard } from './components/ArticleCard';
+export { ArticleFilters } from './components/ArticleFilters';
+export { RatingModule } from './components/RatingModule';
+export { ShareButtons } from './components/ShareButtons';
 
 // Hooks
-export * from './hooks/useArticle.ts';
-export * from './hooks/useArticles.ts';
+export * from './hooks/useArticle';
+export * from './hooks/useArticles';
 
 // Pages
-export { default as Learning } from './pages/Learning.tsx';
-export { default as ArticleView } from './pages/ArticleView.tsx';
+export { Learning } from './pages/Learning';
+export { ArticleView } from './pages/ArticleView';
 
 // Types
-export * from './types/article.ts';
-
+export * from './types/article';
