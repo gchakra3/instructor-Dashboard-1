@@ -1,6 +1,6 @@
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '../../../shared/components/ui/Button'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -15,8 +15,17 @@ export function Login() {
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<any>({})
   
-  const { signIn, signUp } = useAuth()
+  const { signIn, signUp, user } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const redirectTo = searchParams.get('redirect') || '/'
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate(redirectTo)
+    }
+  }, [user, navigate, redirectTo])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -56,7 +65,7 @@ export function Login() {
         alert('Account created successfully! Please check your email for verification.')
       } else {
         await signIn(formData.email, formData.password)
-        navigate('/')
+        navigate(redirectTo)
       }
     } catch (error: any) {
       setErrors({ general: error.message })
@@ -81,6 +90,13 @@ export function Login() {
           <p className="mt-2 text-gray-600">
             {isSignUp ? 'Join our yoga community today' : 'Welcome back to your practice'}
           </p>
+          {redirectTo !== '/' && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-blue-800 text-sm">
+                Please sign in to continue booking your class
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="card p-8">
