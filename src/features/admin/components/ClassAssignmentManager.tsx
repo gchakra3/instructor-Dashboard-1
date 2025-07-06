@@ -89,10 +89,10 @@ export function ClassAssignmentManager() {
               class_type:class_types(name, difficulty_level),
               instructor:instructors(name)
             ),
-            instructor:users!instructor_id(
+            instructor:users(
               id,
               email,
-              profiles!user_id(full_name)
+              profiles(full_name)
             )
           `)
           .order('assigned_at', { ascending: false }),
@@ -112,7 +112,7 @@ export function ClassAssignmentManager() {
           .select(`
             id,
             email,
-            profiles!user_id(full_name),
+            profiles(full_name),
             user_roles(roles(name))
           `)
       ])
