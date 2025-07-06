@@ -40,9 +40,9 @@ export function WeeklySchedule() {
         .eq('class_date', classDate)
         .eq('class_time', schedule.start_time)
         .eq('class_name', schedule.class_type.name)
-        .single()
+        .maybeSingle()
 
-      if (checkError && checkError.code !== 'PGRST116') {
+      if (checkError) {
         throw checkError
       }
 
