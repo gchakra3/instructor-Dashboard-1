@@ -26,8 +26,11 @@ interface ClassAssignment {
     }
   }
   instructor?: {
-    name: string
+    id: string
     email: string
+    profiles: {
+      full_name: string
+    }[]
   }
 }
 
@@ -86,10 +89,10 @@ export function ClassAssignmentManager() {
               class_type:class_types(name, difficulty_level),
               instructor:instructors(name)
             ),
-            instructor:users!class_assignments_instructor_id_fkey(
+            instructor:users!instructor_id(
               id,
               email,
-              profiles(full_name)
+              profiles!user_id(full_name)
             )
           `)
           .order('assigned_at', { ascending: false }),
@@ -109,7 +112,7 @@ export function ClassAssignmentManager() {
           .select(`
             id,
             email,
-            profiles(full_name),
+            profiles!user_id(full_name),
             user_roles(roles(name))
           `)
       ])
